@@ -31,7 +31,9 @@ class LoginOkMessage extends PiranhaMessage {
     this.writeString('someid2')
     this.writeString('http://7166046b142482e67b30-2a63f4436c967aa7d355061bd0d924a1.r65.cf1.rackcdn.com') // ContentURL
     this.writeString('https://event-assets.clashroyaleapp.com') // EventAssetsURL
+    this.writeByte(1)
   }
 }
+
 
 module.exports = LoginOkMessage
