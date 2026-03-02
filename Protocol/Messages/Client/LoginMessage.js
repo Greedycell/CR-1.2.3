@@ -1,6 +1,9 @@
 const PiranhaMessage = require('../../PiranhaMessage')
 const LoginOkMessage = require('../Server/LoginOkMessage')
 const OwnHomeDataMessage = require('../Server/OwnHomeDataMessage')
+const LoginFailedMessage = require('../Server/LoginFailedMessage')
+
+const config = require('../../../config.json')
 
 class LoginMessage extends PiranhaMessage {
   constructor (bytes, client) {
@@ -20,10 +23,15 @@ class LoginMessage extends PiranhaMessage {
     this.data.Build = this.readVInt()
     this.data.Content = this.readVInt()
 
-    //console.log(this.data)
+    console.log(this.data)
   }
 
   async process () {
+    if (this.data.Major !== parseInt(config.Version.split('.')[0]) || this.data.Content !== parseInt(config.Version.split('.')[1])) {
+      await new LoginFailedMessage(this.client, 3, `Your version doesn't match the server version.\n Client Version: ${this.data.Major}.${this.data.Content}\n Server Version: ${config.Version}`).send()
+      return
+    }
+
     await new LoginOkMessage(this.client).send()
     await new OwnHomeDataMessage(this.client).send()
   }
